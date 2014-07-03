@@ -3,6 +3,14 @@ using System.Linq;
 
 namespace adc.Algoritms
 {
+	public enum StepAlgoritm
+	{
+		Old // 2^(-i + y)
+		, Step1 // 2^-(i+y)
+		, Step2 // 2^-i + y
+		
+	}
+
 	public class Algoritm1
 	{
 		private double _p0;
@@ -16,7 +24,7 @@ namespace adc.Algoritms
 			_gamma = gamma;
 		}
 
-		public double ProcessStep(int a)
+		public double OldProcessStep(int a)
 		{
 			double summ = 0;
 			for (int i = 0; i <= _n; i++)
@@ -27,13 +35,46 @@ namespace adc.Algoritms
 			return _p0 * summ;
 		}
 
-		public double[] Process()
+		public double ProcessStep1(int a)
+		{
+			double summ = 0;
+			for (int i = 0; i <= _n; i++)
+			{
+				var ai = (double)((a >> (_n - i)) & 0x1);
+				summ += ai * Math.Pow(2, - (i + _gamma));
+			}
+			return _p0 * summ;
+		}
+
+		public double ProcessStep2(int a)
+		{
+			double summ = 0;
+			for (int i = 0; i <= _n; i++)
+			{
+				var ai = (double)((a >> (_n - i)) & 0x1);
+				summ += ai * ( Math.Pow(2, -i) + _gamma);
+			}
+			return _p0 * summ;
+		}
+
+		public double[] Process(StepAlgoritm stepAlgoritm)
 		{
 			var steps = (int)Math.Pow(2, _n);
 			var result = new double[steps];
 			for (int i = 0; i < steps; i++)
 			{
-				result[i] = ProcessStep(i + 1);
+				switch (stepAlgoritm)
+				{
+					case (StepAlgoritm.Old):
+						result[i] = OldProcessStep(i + 1);
+						break;
+					case (StepAlgoritm.Step1):
+						result[i] = ProcessStep1(i + 1);
+						break;
+					case (StepAlgoritm.Step2):
+						result[i] = ProcessStep2(i + 1);
+						break;
+				}
 			}
 			return result;
 		}

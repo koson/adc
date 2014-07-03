@@ -12,8 +12,8 @@ namespace adc.tests
 			var n = 2;
 			var p0 = 2;
 			var gamma = 4;
-			Assert.AreEqual(8, new Algoritm1(p0, n, gamma).ProcessStep(1));
-			Assert.AreEqual(16, new Algoritm1(p0, n, gamma).ProcessStep(2));
+			Assert.AreEqual(8, new Algoritm1(p0, n, gamma).OldProcessStep(1));
+			Assert.AreEqual(16, new Algoritm1(p0, n, gamma).OldProcessStep(2));
 		}
 
 		[TestMethod]
@@ -22,7 +22,7 @@ namespace adc.tests
 			var n = 3;
 			var p0 = 2;
 			var gamma = 4;
-			var result = new Algoritm1(p0, n, gamma).Process();
+			var result = new Algoritm1(p0, n, gamma).Process(StepAlgoritm.Old);
 			Assert.AreEqual(8, result.Length);
 			Assert.AreEqual(4, result[0]);
 			Assert.AreEqual(8, result[1]);
@@ -36,7 +36,7 @@ namespace adc.tests
 			var p0 = 2;
 			var gamma = 0.2;
 			var algoritm = new Algoritm1(p0, n, gamma);
-			var steps = algoritm.Process();
+			var steps = algoritm.Process(StepAlgoritm.Old);
 			var result = algoritm.Process1(steps);
 			Assert.AreEqual(0.00000000000000016653345369377348, result.MaxDeltaQuantum);
 			Assert.AreEqual(0.28717458874925877, result.IdealQuantum);
@@ -60,7 +60,7 @@ namespace adc.tests
 			var p0 = 2;
 			var gamma = 0.2;
 			var algoritm = new Algoritm1(p0, n, gamma);
-			var steps = algoritm.Process();
+			var steps = algoritm.Process(StepAlgoritm.Old);
 			var result = algoritm.Process2(steps);
 			Assert.AreEqual(0.00000000000000044408920985006262, result.MaxDelta);
 			var expect = new double[8]{ 

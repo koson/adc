@@ -43,8 +43,13 @@
 			this.label_IdelQuant = new System.Windows.Forms.Label();
 			this.label_Maximum = new System.Windows.Forms.Label();
 			this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.radioButton1 = new System.Windows.Forms.RadioButton();
+			this.radioButton2 = new System.Windows.Forms.RadioButton();
+			this.radioButton3 = new System.Windows.Forms.RadioButton();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -150,12 +155,11 @@
 			this.dataGridView1.AllowUserToAddRows = false;
 			this.dataGridView1.AllowUserToDeleteRows = false;
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.dataGridView1.GridColor = System.Drawing.SystemColors.ControlDarkDark;
-			this.dataGridView1.Location = new System.Drawing.Point(0, 293);
+			this.dataGridView1.Location = new System.Drawing.Point(244, 293);
 			this.dataGridView1.Name = "dataGridView1";
 			this.dataGridView1.ReadOnly = true;
-			this.dataGridView1.Size = new System.Drawing.Size(872, 209);
+			this.dataGridView1.Size = new System.Drawing.Size(628, 209);
 			this.dataGridView1.TabIndex = 1;
 			// 
 			// label_IdelQuant
@@ -195,11 +199,60 @@
 			this.zedGraphControl1.Size = new System.Drawing.Size(616, 265);
 			this.zedGraphControl1.TabIndex = 4;
 			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.radioButton3);
+			this.groupBox2.Controls.Add(this.radioButton2);
+			this.groupBox2.Controls.Add(this.radioButton1);
+			this.groupBox2.Location = new System.Drawing.Point(21, 293);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(206, 197);
+			this.groupBox2.TabIndex = 5;
+			this.groupBox2.TabStop = false;
+			// 
+			// radioButton1
+			// 
+			this.radioButton1.AutoEllipsis = true;
+			this.radioButton1.AutoSize = true;
+			this.radioButton1.Checked = true;
+			this.radioButton1.Location = new System.Drawing.Point(12, 19);
+			this.radioButton1.Name = "radioButton1";
+			this.radioButton1.Size = new System.Drawing.Size(71, 17);
+			this.radioButton1.TabIndex = 0;
+			this.radioButton1.TabStop = true;
+			this.radioButton1.Text = "2^( -i + y )";
+			this.radioButton1.UseVisualStyleBackColor = true;
+			// 
+			// radioButton2
+			// 
+			this.radioButton2.AutoEllipsis = true;
+			this.radioButton2.AutoSize = true;
+			this.radioButton2.Location = new System.Drawing.Point(12, 42);
+			this.radioButton2.Name = "radioButton2";
+			this.radioButton2.Size = new System.Drawing.Size(77, 17);
+			this.radioButton2.TabIndex = 1;
+			this.radioButton2.TabStop = true;
+			this.radioButton2.Text = "2^ - ( i + y )";
+			this.radioButton2.UseVisualStyleBackColor = true;
+			// 
+			// radioButton3
+			// 
+			this.radioButton3.AutoEllipsis = true;
+			this.radioButton3.AutoSize = true;
+			this.radioButton3.Location = new System.Drawing.Point(12, 65);
+			this.radioButton3.Name = "radioButton3";
+			this.radioButton3.Size = new System.Drawing.Size(80, 17);
+			this.radioButton3.TabIndex = 2;
+			this.radioButton3.TabStop = true;
+			this.radioButton3.Text = "((2^ - i) + y )";
+			this.radioButton3.UseVisualStyleBackColor = true;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(872, 502);
+			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.zedGraphControl1);
 			this.Controls.Add(this.label_Maximum);
 			this.Controls.Add(this.label_IdelQuant);
@@ -211,6 +264,8 @@
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -232,6 +287,10 @@
 		private System.Windows.Forms.Label label_IdelQuant;
 		private System.Windows.Forms.Label label_Maximum;
 		private ZedGraph.ZedGraphControl zedGraphControl1;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.RadioButton radioButton3;
+		private System.Windows.Forms.RadioButton radioButton2;
+		private System.Windows.Forms.RadioButton radioButton1;
 	}
 }
 

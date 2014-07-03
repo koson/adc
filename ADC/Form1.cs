@@ -24,16 +24,20 @@ namespace ADC
 			label_Maximum.Visible = false;
 		}
 
+		private Algoritm1 createAlgoritm()
+		{
+			return new Algoritm1(double.Parse(textBox_P0.Text.Replace(".", ","))
+						, int.Parse(textBox_N.Text)
+						, double.Parse(textBox_Gamma.Text.Replace(".", ",")));
+		}
+
 		private void button3_Click(object sender, EventArgs e)
 		{
 			try
 			{
 				clearAll();
-				var algoritm = new Algoritm1(double.Parse(textBox_P0.Text.Replace(".", ","))
-						, int.Parse(textBox_N.Text)
-						, double.Parse(textBox_Gamma.Text.Replace(".", ",")));
-				var steps = algoritm.Process();
-				showSteps(steps);
+				var algoritm = createAlgoritm();
+				var steps = showSteps(algoritm);
 				var result = algoritm.Process2(steps);
 				showResult2(steps, result);
 			}
@@ -71,11 +75,8 @@ namespace ADC
 			try
 			{
 				clearAll();
-				var steps = new Algoritm1(double.Parse(textBox_P0.Text.Replace(".", ","))
-						, int.Parse(textBox_N.Text)
-						, double.Parse(textBox_Gamma.Text.Replace(".", ",")))
-					.Process();
-				showSteps(steps);
+				var algoritm = createAlgoritm();
+				var steps = showSteps(algoritm);
 			}
 			catch (Exception ex)
 			{
@@ -83,8 +84,17 @@ namespace ADC
 			}
 		}
 
-		private void showSteps(double[] steps)
+		private double[] showSteps(Algoritm1 algoritm)
 		{
+
+			double[] steps = null;
+			if (radioButton1.Checked)
+				steps = algoritm.Process(StepAlgoritm.Old);
+			if (radioButton2.Checked)
+				steps = algoritm.Process(StepAlgoritm.Step1);
+			if (radioButton3.Checked)
+				steps = algoritm.Process(StepAlgoritm.Step2);
+
 			this.dataGridView1.Columns.Add("N", "N");
 			var index = this.dataGridView1.Columns.Add("step", "Шаг");
 			this.dataGridView1.Columns[index].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -114,6 +124,7 @@ namespace ADC
 			zedGraph.AxisChange();
 			pane.YAxis.Scale.Max = steps[steps.Length - 1] * 1.1;
 			zedGraph.Invalidate();
+			return steps;
 		}
 
 		private void button2_Click(object sender, EventArgs e)
@@ -121,11 +132,8 @@ namespace ADC
 			try
 			{
 				clearAll();
-				var algoritm = new Algoritm1(double.Parse(textBox_P0.Text.Replace(".", ","))
-						, int.Parse(textBox_N.Text)
-						, double.Parse(textBox_Gamma.Text.Replace(".", ",")));
-				var steps = algoritm.Process();
-				showSteps(steps);
+				var algoritm = createAlgoritm();
+				var steps = showSteps(algoritm);
 				var result = algoritm.Process1(steps);
 				showResult1(result);
 			}
