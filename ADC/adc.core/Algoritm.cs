@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace adc.Algoritms
+namespace adc.core
 {
 	public enum StepAlgoritm
 	{
@@ -11,7 +11,7 @@ namespace adc.Algoritms
 		
 	}
 
-	public class Algoritm1
+	public class Algoritm
 	{
 		private double _p0;
 		private int _n;
