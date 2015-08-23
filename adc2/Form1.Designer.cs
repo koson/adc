@@ -42,15 +42,19 @@
 			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 			this.label1 = new System.Windows.Forms.Label();
 			this._kNumericUpDown = new System.Windows.Forms.NumericUpDown();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.plusRadioButton = new System.Windows.Forms.RadioButton();
+			this.minusRadioButton = new System.Windows.Forms.RadioButton();
 			((System.ComponentModel.ISupportInitialize)(this._nNumericUpDown)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this._u0NumericUpDown)).BeginInit();
 			this.panel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this._kNumericUpDown)).BeginInit();
+			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// _nNumericUpDown
 			// 
-			this._nNumericUpDown.Location = new System.Drawing.Point(193, 7);
+			this._nNumericUpDown.Location = new System.Drawing.Point(193, 5);
 			this._nNumericUpDown.Minimum = new decimal(new int[] {
             2,
             0,
@@ -77,7 +81,7 @@
 			// label_u0
 			// 
 			this.label_u0.AutoSize = true;
-			this.label_u0.Location = new System.Drawing.Point(12, 32);
+			this.label_u0.Location = new System.Drawing.Point(12, 33);
 			this.label_u0.Name = "label_u0";
 			this.label_u0.Size = new System.Drawing.Size(97, 13);
 			this.label_u0.TabIndex = 2;
@@ -91,7 +95,7 @@
             0,
             0,
             131072});
-			this._u0NumericUpDown.Location = new System.Drawing.Point(193, 33);
+			this._u0NumericUpDown.Location = new System.Drawing.Point(193, 29);
 			this._u0NumericUpDown.Name = "_u0NumericUpDown";
 			this._u0NumericUpDown.Size = new System.Drawing.Size(94, 20);
 			this._u0NumericUpDown.TabIndex = 3;
@@ -132,9 +136,9 @@
 			this.panel1.Controls.Add(this.zedGraphControl3);
 			this.panel1.Controls.Add(this.zedGraphControl2);
 			this.panel1.Controls.Add(this.zedGraphControl1);
-			this.panel1.Location = new System.Drawing.Point(15, 59);
+			this.panel1.Location = new System.Drawing.Point(15, 121);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(903, 291);
+			this.panel1.Size = new System.Drawing.Size(903, 229);
 			this.panel1.TabIndex = 6;
 			// 
 			// zedGraphControl3
@@ -182,7 +186,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(302, 9);
+			this.label1.Location = new System.Drawing.Point(12, 57);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(176, 13);
 			this.label1.TabIndex = 8;
@@ -190,7 +194,7 @@
 			// 
 			// _kNumericUpDown
 			// 
-			this._kNumericUpDown.Location = new System.Drawing.Point(483, 7);
+			this._kNumericUpDown.Location = new System.Drawing.Point(193, 53);
 			this._kNumericUpDown.Minimum = new decimal(new int[] {
             2,
             0,
@@ -205,11 +209,45 @@
             0,
             0});
 			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.minusRadioButton);
+			this.groupBox1.Controls.Add(this.plusRadioButton);
+			this.groupBox1.Location = new System.Drawing.Point(293, 7);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(284, 66);
+			this.groupBox1.TabIndex = 9;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Степень двойки";
+			// 
+			// plusRadioButton
+			// 
+			this.plusRadioButton.AutoSize = true;
+			this.plusRadioButton.Location = new System.Drawing.Point(6, 43);
+			this.plusRadioButton.Name = "plusRadioButton";
+			this.plusRadioButton.Size = new System.Drawing.Size(36, 17);
+			this.plusRadioButton.TabIndex = 0;
+			this.plusRadioButton.Text = "+ i";
+			this.plusRadioButton.UseVisualStyleBackColor = true;
+			// 
+			// minusRadioButton
+			// 
+			this.minusRadioButton.AutoSize = true;
+			this.minusRadioButton.Checked = true;
+			this.minusRadioButton.Location = new System.Drawing.Point(6, 19);
+			this.minusRadioButton.Name = "minusRadioButton";
+			this.minusRadioButton.Size = new System.Drawing.Size(33, 17);
+			this.minusRadioButton.TabIndex = 1;
+			this.minusRadioButton.TabStop = true;
+			this.minusRadioButton.Text = "- i";
+			this.minusRadioButton.UseVisualStyleBackColor = true;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(930, 508);
+			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this._kNumericUpDown);
 			this.Controls.Add(this.panel1);
@@ -225,6 +263,8 @@
 			((System.ComponentModel.ISupportInitialize)(this._u0NumericUpDown)).EndInit();
 			this.panel1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this._kNumericUpDown)).EndInit();
+			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -245,6 +285,9 @@
 		private ZedGraph.ZedGraphControl zedGraphControl3;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.NumericUpDown _kNumericUpDown;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.RadioButton minusRadioButton;
+		private System.Windows.Forms.RadioButton plusRadioButton;
 	}
 }
 

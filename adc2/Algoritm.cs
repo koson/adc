@@ -22,13 +22,13 @@ namespace adc.core
 		/// ai - значение i бита в числе a
 		/// </summary>
 		/// <returns></returns>
-		public double[] GetIdealCharacteristic()
+		public double[] GetIdealCharacteristic(Func<double, int, double> sumElement = null)
 		{
 			var steps = (int)Math.Pow(2, _n);
 			var result = new double[steps];
 			for (int a = 0; a < steps; a++)
 			{
-				result[a] = GetIdealCharacteristicStep(a);
+				result[a] = GetIdealCharacteristicStep(a, sumElement);
 			}
 			return result;
 		}
@@ -38,13 +38,16 @@ namespace adc.core
 		/// </summary>
 		/// <param name="a">Значение из последовательности от 0 до ((2^_n) -1)</param>
 		/// <returns></returns>
-		private double GetIdealCharacteristicStep(int a)
+		private double GetIdealCharacteristicStep(int a, Func<double, int, double> sumElement = null)
 		{
 			double summ = 0;
 			for (int i = 0; i <= _n; i++)
 			{
 				var ai = ((a >> i) & 0x1);
-				summ += ai * Math.Pow(2, -i);
+				if (sumElement != null)
+					summ += sumElement(ai, i);
+				else
+					summ += ai * Math.Pow(2, -i);
 			}
 			return _u0 * summ;
 		}
@@ -59,7 +62,7 @@ namespace adc.core
 		/// </summary>
 		/// <param name="errors"></param>
 		/// <returns></returns>
-		public double[] GetRealCharacteristic(double[] errors)
+		public double[] GetRealCharacteristic(double[] errors, Func<double, double, int, double> sumElement = null)
 		{
 			if (errors.Length != _n)
 				throw new ArgumentOutOfRangeException(String.Format("Количество погрешностей не соответствует числу разрядов {0}", _n));
@@ -68,7 +71,7 @@ namespace adc.core
 			var result = new double[steps];
 			for (int a = 0; a < steps; a++)
 			{
-				result[a] = GetRealCharacteristicStep(a, errors);
+				result[a] = GetRealCharacteristicStep(a, errors, sumElement);
 			}
 			return result;
 
@@ -80,7 +83,7 @@ namespace adc.core
 		/// <param name="a">Значение из последовательности от 0 до ((2^_n) -1)</param>
 		/// <param name="errors">Массив погрешностей</param>
 		/// <returns></returns>
-		private double GetRealCharacteristicStep(int a, double[] errors)
+		private double GetRealCharacteristicStep(int a, double[] errors, Func<double, double, int, double> sumElement = null)
 		{
 			double summ = 0;
 			var stepsCount = _n - 1;
@@ -88,7 +91,10 @@ namespace adc.core
 			{
 				var ai = ((a >> i) & 0x1);
 				var error = errors[i];
-				summ += ai * Math.Pow(2, -(i + error));
+				if (sumElement != null)
+					summ += sumElement(ai, error, i);
+				else
+					summ += ai * Math.Pow(2, -(i + error));
 			}
 			return _u0 * summ;
 		}

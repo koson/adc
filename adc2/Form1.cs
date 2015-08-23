@@ -20,13 +20,24 @@ namespace adc2
 
 		private void button1_Click(object sender, EventArgs e)
 		{
+			Func<double, int, double> idealSumElementFunction = null;
+			Func<double, double, int, double> realSumElementFunction = null;
+
+			if (plusRadioButton.Checked)
+			{
+				idealSumElementFunction = (ai, i) => ai * Math.Pow(2, i);
+				realSumElementFunction = (ai, error, i) => ai * Math.Pow(2, i + error);
+			}
+
 			var algoritm = CreateAlgoritm();
 
-			var ideal = algoritm.GetIdealCharacteristic();
+			var ideal = algoritm.GetIdealCharacteristic(idealSumElementFunction);
 			Message("Идеальное распределение :{0}\r\n", ideal);
+
 			var errors = algoritm.GetErrors();
 			Message("Погрешности :{0}\r\n", errors);
-			var real = algoritm.GetRealCharacteristic(errors);
+
+			var real = algoritm.GetRealCharacteristic(errors, realSumElementFunction);
 			ShowIdealAndReal(ideal, real);
 			Message("Реальное распределение :{0}\r\n", real);
 
@@ -76,8 +87,10 @@ namespace adc2
 			pane.CurveList.Clear();
 			var xArray = Enumerable.Range(0, ideal.Length).Select(x => (double)x).ToArray();
 
-			pane.AddCurve("Ideal", xArray, ideal, Color.Green, SymbolType.None);
-			pane.AddCurve("Real", xArray, real, Color.Red, SymbolType.None);
+			var curve = pane.AddCurve("Ideal", xArray, ideal, Color.Green, SymbolType.None);
+			curve.Line.StepType = StepType.ForwardStep;
+			curve = pane.AddCurve("Real", xArray, real, Color.Red, SymbolType.None);
+			curve.Line.StepType = StepType.ForwardStep;
 			zedGraph.AxisChange();
 			zedGraph.Invalidate();
 		}
