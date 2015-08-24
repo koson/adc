@@ -43,7 +43,7 @@ namespace adc.core
 			double summ = 0;
 			for (int i = 0; i <= _n; i++)
 			{
-				var ai = ((a >> i) & 0x1);
+				var ai = ((a >> (_n - i)) & 0x1);
 				if (sumElement != null)
 					summ += sumElement(ai, i);
 				else
@@ -89,7 +89,7 @@ namespace adc.core
 			var stepsCount = _n - 1;
 			for (int i = 0; i <= stepsCount; i++)
 			{
-				var ai = ((a >> i) & 0x1);
+				var ai = ((a >> (_n - i)) & 0x1);
 				var error = errors[i];
 				if (sumElement != null)
 					summ += sumElement(ai, error, i);
