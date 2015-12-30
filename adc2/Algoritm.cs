@@ -41,13 +41,14 @@ namespace adc.core
 		private double GetIdealCharacteristicStep(int a, Func<double, int, double> sumElement = null)
 		{
 			double summ = 0;
-			for (int i = 0; i <= _n; i++)
+			for (int j = 0; j < _n; j++)
 			{
-				var ai = ((a >> (_n - i)) & 0x1);
+				var i = _n - 1 - j;
+				var aj = ((a >> j) & 0x1);
 				if (sumElement != null)
-					summ += sumElement(ai, i);
+					summ += sumElement(aj, j);
 				else
-					summ += ai * Math.Pow(2, -i);
+					summ += aj * Math.Pow(2, -i);
 			}
 			return _u0 * summ;
 		}
@@ -86,15 +87,18 @@ namespace adc.core
 		private double GetRealCharacteristicStep(int a, double[] errors, Func<double, double, int, double> sumElement = null)
 		{
 			double summ = 0;
-			var stepsCount = _n - 1;
-			for (int i = 0; i <= stepsCount; i++)
+
+			//var upper = 0.5 * _u0 / _n;
+			//var stepsCount = _n - 1;
+			for (int j = 0; j < _n; j++)
 			{
-				var ai = ((a >> (_n - i)) & 0x1);
-				var error = errors[i];
+				var i = _n - 1 - j;
+				var aj = ((a >> j) & 0x1);
+				var error = errors[j];
 				if (sumElement != null)
-					summ += sumElement(ai, error, i);
+					summ += sumElement(aj, error, j);
 				else
-					summ += ai * Math.Pow(2, -(i + error));
+					summ += aj * Math.Pow(2, -(i + error));
 			}
 			return _u0 * summ;
 		}
@@ -109,6 +113,40 @@ namespace adc.core
 			var upper = 0.5 * _u0 / _n;
 			var continuousUniform = new ContinuousUniform(-upper, upper);
 			continuousUniform.Samples(result);
+			return result;
+		}
+
+		/// <summary>
+		/// Возвращает массив погрешностей распределенных по равномерному закону распределения
+		/// </summary>
+		/// <returns></returns>
+		public double[] GetErrors2()
+		{
+			var result = new double[_n];
+			var upper = 0.5 * _u0 / _n;
+			var lower = -upper;
+			var width = (upper - lower) / _n;
+			for (int i = 0; i < _n; i++)
+			{
+				var stepLower = lower + width * i;
+				var stepUpper = stepLower + width;
+				result[i] = ContinuousUniform.Sample(stepLower, stepUpper);
+			}
+			return result;
+		}
+
+		public double[] GetErrors2Inv()
+		{
+			var result = new double[_n];
+			var upper = 0.5 * _u0 / _n;
+			var lower = -upper;
+			var width = (upper - lower) / _n;
+			for (int i = 0; i < _n; i++)
+			{
+				var stepLower = lower + width * i;
+				var stepUpper = stepLower + width;
+				result[_n - i - 1] = ContinuousUniform.Sample(stepLower, stepUpper);
+			}
 			return result;
 		}
 	}

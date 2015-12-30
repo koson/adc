@@ -18,66 +18,116 @@ namespace adc2
 			InitializeComponent();
 		}
 
+		private double[] GetErrors(Algoritm algoritm)
+		{
+			if (String.IsNullOrEmpty(errorsTextBox.Text.Trim()))
+			{
+				button2_Click(null, null);
+			}
+			try
+			{
+				return errorsTextBox.Text.
+					Split(';').
+					Select(er =>
+					{
+						double tmp;
+						if (!double.TryParse(er.Replace(',', '.'), out tmp))
+							double.TryParse(er.Replace('.', ','), out tmp);
+						return tmp;
+					}).
+					ToArray();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(String.Format("Ошибка при разборе погрешностей: {0}", ex.Message));
+				return null;
+			}
+		}
+
 		private void button1_Click(object sender, EventArgs e)
 		{
-			Func<double, int, double> idealSumElementFunction = null;
-			Func<double, double, int, double> realSumElementFunction = null;
-
-			if (plusRadioButton.Checked)
+			try
 			{
-				idealSumElementFunction = (ai, i) => ai * Math.Pow(2, i);
-				realSumElementFunction = (ai, error, i) => ai * Math.Pow(2, i + error);
+				Func<double, int, double> idealSumElementFunction = null;
+				Func<double, double, int, double> realSumElementFunction = null;
+
+				if (plusRadioButton.Checked)
+				{
+					idealSumElementFunction = (ai, i) => ai * Math.Pow(2, i);
+					realSumElementFunction = (ai, error, i) => ai * Math.Pow(2, i + error);
+				}
+
+				var algoritm = CreateAlgoritm();
+
+				var ideal = algoritm.GetIdealCharacteristic(idealSumElementFunction);
+				Message("Идеальное распределение :{0}\r\n", ideal);
+
+				var errors = GetErrors(algoritm);
+				if (errors == null)
+					return;
+
+				Message("Погрешности :{0}\r\n", errors);
+
+				var real = algoritm.GetRealCharacteristic(errors, realSumElementFunction);
+				ShowIdealAndReal(ideal, real);
+				Message("Реальное распределение :{0}\r\n", real);
+
+				var diff = GetDiff(ideal, real);
+				var mean = Statistics.Mean(diff);
+				var variance = Statistics.Variance(diff);
+				var standardDeviation = Statistics.StandardDeviation(diff);
+				ShowDiff(diff);
+				Message("Разность :{0}", diff);
+				Message("Математическое ожидание = {0}", mean);
+				Message("Дисперсия = {0}", variance);
+				Message("Среднеквадратичное отклонеение = {0}\r\n", standardDeviation);
+
+				Message("Гистограмма: ");
+				var k = (int)_kNumericUpDown.Value;
+				var histogram = new Histogram(diff, k);
+				ShowHistogram(histogram);
+				Message("\tМаксимум по x {0}", histogram.UpperBound);
+				Message("\tМинимум по x {0}", histogram.LowerBound);
+
+				ChiSquareTest(histogram, mean, standardDeviation);
 			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(String.Format("Произошла ошибка: {0}", ex.Message));
+			}
+		}
 
-			var algoritm = CreateAlgoritm();
+		private void ChiSquareTest(Histogram histogram, double mean, double standardDeviation)
+		{
+			var normalCDF = new double[histogram.BucketCount + 1];
+			var realHistogram = new double[histogram.BucketCount];
+			var normalHistogram = new double[histogram.BucketCount];
+			var x = new double[histogram.BucketCount];
 
-			var ideal = algoritm.GetIdealCharacteristic(idealSumElementFunction);
-			Message("Идеальное распределение :{0}\r\n", ideal);
-
-			var errors = algoritm.GetErrors();
-			Message("Погрешности :{0}\r\n", errors);
-
-			var real = algoritm.GetRealCharacteristic(errors, realSumElementFunction);
-			ShowIdealAndReal(ideal, real);
-			Message("Реальное распределение :{0}\r\n", real);
-
-			var diff = GetDiff(ideal, real);
-			var mean = Statistics.Mean(diff);
-			var variance = Statistics.Variance(diff);
-			var standardDeviation = Statistics.StandardDeviation(diff);
-			ShowDiff(diff);
-			Message("Разность :{0}", diff);
-			Message("Математическое ожидание = {0}", mean);
-			Message("Дисперсия = {0}", variance);
-			Message("Среднеквадратичное отклонеение = {0}\r\n", standardDeviation);
-
-			Message("Гистограмма: ");
-			var k = (int)_kNumericUpDown.Value;
-			var histogram = new Histogram(diff, k);
-			ShowHistogram(histogram);
-			Message("\tМаксимум по x {0}", histogram.UpperBound);
-			Message("\tМинимум по x {0}", histogram.LowerBound);
-			var normalHistogram = new double[histogram.BucketCount - 1];
-			var realHistogram = new double[histogram.BucketCount - 1];
-			var x = new double[histogram.BucketCount - 1];
+			var normal = new Normal(mean, standardDeviation);
 
 			for (int i = 0; i < histogram.BucketCount; i++)
 			{
 				var backet = histogram[i];
-				// начало первого интервала в гистограмме пропускаем  
-				if (i != 0)
-				{
-					x[i - 1] = backet.LowerBound;
-					normalHistogram[i - 1] = Normal.PDFLn(mean, standardDeviation, x[i - 1]);
-					realHistogram[i - 1] = backet.Count;
-				}
+				x[i] = backet.LowerBound;
+				// Взяли левую границу интервалов
+				normalCDF[i + 1] = Normal.CDF(mean, standardDeviation, backet.UpperBound);
+				realHistogram[i] = backet.Count;
 				Message("\tотрезок {0}, ширина {1} количество {2} мин x {4} макс x {3} ", i, backet.Width, backet.Count, backet.UpperBound, backet.LowerBound);
 			}
+
+			normalCDF[0] = Normal.CDF(mean, standardDeviation, histogram.LowerBound);
+			for (int i = 0; i < normalCDF.Length - 1; i++)
+			{
+				normalHistogram[i] = (normalCDF[i + 1] - normalCDF[i]) * histogram.DataCount;
+			}
+
+			Message("normal histogramm {0}", normalHistogram);
+			Message("real histogramm {0}", realHistogram);
 			//ShowHistogram(x, normalHistogram);
 			var test = new ChiSquareTest(normalHistogram, realHistogram, normalHistogram.Length - 1);
 			Message("(Критерий пирсона) Уровень значимости = {0}", test.PValue);
 			Message("Распределение {0} является нормальным", test.Significant ? "не" : "");
-
 		}
 
 		private void ShowIdealAndReal(double[] ideal, double[] real)
@@ -103,7 +153,7 @@ namespace adc2
 			var xArray = Enumerable.Range(0, diff.Length).Select(x => (double)x).ToArray();
 
 			var curve = pane.AddCurve("Diff", xArray, diff, Color.Green, SymbolType.None);
-			curve.Line.StepType = StepType.RearwardStep;
+			curve.Line.StepType = StepType.ForwardStep;
 			zedGraph.AxisChange();
 			zedGraph.Invalidate();
 		}
@@ -116,7 +166,7 @@ namespace adc2
 
 			for (int i = 0; i < histogram.BucketCount; i++)
 			{
-				var height = histogram[i].Count / histogram.DataCount;
+				var height = histogram[i].Count; // histogram.DataCount;
 				BoxObj box = new BoxObj(histogram[i].LowerBound,
 					height,
 					histogram[i].Width,
@@ -128,7 +178,7 @@ namespace adc2
 			}
 			pane.XAxis.Scale.Max = histogram.UpperBound;
 			pane.XAxis.Scale.Min = histogram.LowerBound;
-			pane.YAxis.Scale.Max = 1;
+			pane.YAxis.Scale.Max = histogram.DataCount;
 			pane.YAxis.Scale.Min = 0;
 
 			zedGraph.AxisChange();
@@ -188,6 +238,20 @@ namespace adc2
 				diff[i] = real[i] - ideal[i];
 			}
 			return diff;
+		}
+
+		private void button2_Click(object sender, EventArgs e)
+		{
+			double[] errors;
+
+			var algoritm = CreateAlgoritm();
+			if (radioButton2.Checked)
+				errors = algoritm.GetErrors2();
+			else if (radioButton3.Checked)
+				errors = algoritm.GetErrors2Inv();
+			else errors = algoritm.GetErrors();
+
+			errorsTextBox.Text = String.Join("; ", errors.Select(er => er.ToString()).ToArray());
 		}
 	}
 }
