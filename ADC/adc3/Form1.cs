@@ -12,7 +12,57 @@ namespace adc3
         public Form1()
         {
             InitializeComponent();
+            InitGraph();
         }
+
+        private void InitGraph()
+        {
+            var pane = zedGraphControl1.GraphPane;
+            pane.XAxis.Cross = 0.0;
+            pane.YAxis.Cross = 0.0;
+            // Отключим отображение первых и последних меток по осям
+            pane.XAxis.Scale.IsSkipFirstLabel = true;
+            pane.XAxis.Scale.IsSkipLastLabel = true;
+            // Отключим отображение меток в точке пересечения с другой осью
+            pane.XAxis.Scale.IsSkipCrossLabel = true;
+            // Отключим отображение первых и последних меток по осям
+            pane.YAxis.Scale.IsSkipFirstLabel = true;
+            // Отключим отображение меток в точке пересечения с другой осью
+            pane.YAxis.Scale.IsSkipLastLabel = true;
+            pane.YAxis.Scale.IsSkipCrossLabel = true;
+            // Спрячем заголовки осей
+            pane.XAxis.Title.IsVisible = false;
+            pane.YAxis.Title.IsVisible = false;
+            zedGraphControl1.AxisChange();
+            zedGraphControl1.Invalidate();
+        }
+        /*
+        private void Show1()
+        {
+            var zedGraph = zedGraphControl1;
+            var pane = zedGraph.GraphPane;
+            pane.GraphObjList.Clear();
+
+            for (int i = 0; i < histogram.BucketCount; i++)
+            {
+                var height = histogram[i].Count; // histogram.DataCount;
+                BoxObj box = new BoxObj(histogram[i].LowerBound,
+                    height,
+                    histogram[i].Width,
+                    height);
+
+                box.IsClippedToChartRect = true;
+                box.Fill.Color = Color.Green;
+                pane.GraphObjList.Add(box);
+            }
+            pane.XAxis.Scale.Max = histogram.UpperBound;
+            pane.XAxis.Scale.Min = histogram.LowerBound;
+            pane.YAxis.Scale.Max = histogram.DataCount;
+            pane.YAxis.Scale.Min = 0;
+
+            zedGraph.AxisChange();
+            zedGraph.Invalidate();
+        }*/
 
         private void start_Click(object sender, EventArgs e)
         {
