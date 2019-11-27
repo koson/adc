@@ -172,3 +172,5 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+/.vs
+/ADC/.vs/ADC/v16/Server/sqlite3
